@@ -164,8 +164,8 @@ int main() {
     //创建套接字地址结构
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(80);
-    addr.sin_addr.s_addr = INADDR_ANY;
+    addr.sin_port = htons(1234);
+    addr.sin_addr.s_addr = inet_addr("0.0.0.0");
     memset(addr.sin_zero, 0, sizeof(addr.sin_zero));
 
     //绑定地址
@@ -178,14 +178,10 @@ int main() {
     int client_sockfd = accept(sockfd, (struct sockaddr *)&addr, (socklen_t*)&sizeof(addr));
 
     //从客户端接收数据
-    char buffer[1024] = {0};
-    read(new_socket, buffer, 1024);
-    printf("Client: %s\n", buffer);
-
-    //向客户端发送数据
-    char *hello = "Hello from server";
-    send(client_sockfd, hello, strlen(hello), 0);
-    printf("Hello message sent\n");
+    char buf[1024] = {0};
+    read(client_sockfd, buf, 1024);
+    std::string str(buf, 1024);
+    test->commit(std::move(str));
 
     //关闭套接字连接
     close(client_sockfd);

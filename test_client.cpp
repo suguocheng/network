@@ -246,6 +246,7 @@ class mess {
 int main() {
     // Server 端的监听地址
     auto msg = InitTestClient("192.168.30.170:1234");
+    
     // Put your code Here!
 
     //创建套接字
@@ -255,20 +256,30 @@ int main() {
     struct sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(80);
-    inet_pton(AF_INET, INADDR_ANY, &server_addr.sin_addr);
+    server_addr.sin_addr.s_addr = inet_addr("192.168.30.170");
+    memset(server_addr.sin_zero, 0, sizeof(server_addr.sin_zero));
 
     //连接到服务器
     connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr));
     
     //发送数据到服务器
-    char *hello = "Hello from client";
-    send(sock, hello, strlen(hello), 0);
-    printf("Hello message sent\n");
+    //创建套接字
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
 
-    //从服务器接收响应
-    char buffer[1024] = {0};
-    read(sock, buffer, 1024);
-    printf("Server: %s\n", buffer);
+    //创建套接字地址结构
+    struct sockaddr_in server_addr;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(80);
+    server_addr.sin_addr.s_addr = inet_addr("192.168.30.170");
+    memset(server_addr.sin_zero, 0, sizeof(server_addr.sin_zero));
+
+    //连接到服务器
+    connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr));
+    
+    //发送数据到服务器
+    auto str = msg->pop();
+    const char *data = str.data();
+    send(sock, data, strlen(data), 0);
 
     //关闭套接字连接
     close(sock);
