@@ -252,24 +252,16 @@ int main() {
     //创建套接字
     int sock = socket(AF_INET, SOCK_STREAM, 0);
 
-    //创建套接字地址结构
-    struct sockaddr_in server_addr;
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(80);
-    server_addr.sin_addr.s_addr = inet_addr("192.168.30.170");
-    memset(server_addr.sin_zero, 0, sizeof(server_addr.sin_zero));
-
-    //连接到服务器
-    connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr));
-    
-    //发送数据到服务器
-    //创建套接字
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    //设置超时
+    struct timeval timeout;
+    timeout.tv_sec = 5; // 5秒超时
+    timeout.tv_usec = 0;
+    setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
 
     //创建套接字地址结构
     struct sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(80);
+    server_addr.sin_port = htons(1234);
     server_addr.sin_addr.s_addr = inet_addr("192.168.30.170");
     memset(server_addr.sin_zero, 0, sizeof(server_addr.sin_zero));
 

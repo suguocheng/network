@@ -161,6 +161,12 @@ int main() {
     //创建套接字
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
+    //设置超时
+    struct timeval timeout;
+    timeout.tv_sec = 5; // 5秒超时
+    timeout.tv_usec = 0;
+    setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+
     //创建套接字地址结构
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
